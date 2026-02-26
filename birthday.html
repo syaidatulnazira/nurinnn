@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreamy Birthday Night 🌌🎂</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Glowing Title */
+h1 {
+    font-size: 2.8rem;
+    text-shadow: 
+        0 0 10px #fff,
+        0 0 20px #00d2ff,
+        0 0 40px #00d2ff;
+    z-index: 10;
+    margin-bottom: 10px;
+}
+
+.instruction {
+    opacity: 0.8;
+    z-index: 10;
+}
+
+/* Stars */
+.stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    0%,100% { opacity: 0.2; }
+    50% { opacity: 1; }
+}
+
+/* Shooting Star */
+.shooting-star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px white;
+    animation: shoot 3s linear forwards;
+}
+
+@keyframes shoot {
+    0% { transform: translate(0,0); opacity: 1; }
+    100% { transform: translate(-600px,400px); opacity: 0; }
+}
+
+/* Balloon */
+.balloon {
+    position: absolute;
+    bottom: -150px;
+    width: 80px;
+    height: 100px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3);
+    z-index: 5;
+}
+
+.balloon::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    width: 2px;
+    height: 50px;
+    background: rgba(255,255,255,0.3);
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-120vh) rotate(20deg); }
+}
+
+/* Modal */
+#modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    color: #333;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    z-index: 100;
+    width: 280px;
+}
+
+#modal h3 { color: #ff4081; margin-top: 0; }
+
+#modal button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #ff4081;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<audio id="birthdaySong" src="birthdaysong.mp3" preload="auto" loop></audio>
+
+<h1>HAPPY BIRTHDAY NURIN! 🎂</h1>
+<p class="instruction">Cuba try pecahkan belon tu...</p>
+
+<div id="modal">
+    <div id="modal-content"></div>
+    <button onclick="closeModal()">Close</button>
+</div>
+
+<script>
+const colors = ['#ff4081','#00d2ff','#ffeb3b','#76ff03','#ba68c8','#ff9100'];
+const surprises = [
+    { text:"Happy birthday dohh! Dah 21 siot✨", emoji:"🎂" },
+    { text:"May your day be filled with joy peace and love 🫰", emoji:"💕" },
+    { text:"May Allah bless your life with endless happiness, good health and success! Aaminn 𓍢🌷͙֒", emoji:"🌻" },
+    { text:"Stay awesome and stay young! 🧸", emoji:"🌟" },
+    { text:"Dah berjaya nanti jangan lupa aku 😂 (gurau je)", emoji:"💰" },
+    { text:"Wishing you the happiest of birthdays, filled with love, laughter, and all your favorite things. ❤️", emoji:"🤝" }
+];
+
+let musicStarted = false;
+
+/* Fade In Music */
+function startMusic() {
+    const music = document.getElementById("birthdaySong");
+    music.volume = 0;
+    music.play();
+    let volume = 0;
+    const fade = setInterval(()=>{
+        if(volume < 0.8){
+            volume += 0.05;
+            music.volume = volume;
+        } else {
+            clearInterval(fade);
+        }
+    },200);
+}
+
+/* Stars Generate */
+const starsContainer = document.getElementById("stars");
+for(let i=0;i<120;i++){
+    const star = document.createElement("div");
+    star.className="star";
+    star.style.top=Math.random()*window.innerHeight+"px";
+    star.style.left=Math.random()*window.innerWidth+"px";
+    star.style.animationDuration=(1+Math.random()*2)+"s";
+    starsContainer.appendChild(star);
+}
+
+/* Shooting Star */
+function createShootingStar(){
+    const s=document.createElement("div");
+    s.className="shooting-star";
+    s.style.top=Math.random()*200+"px";
+    s.style.left=window.innerWidth+"px";
+    document.body.appendChild(s);
+    setTimeout(()=>{s.remove();},3000);
+}
+setInterval(createShootingStar,4000);
+
+/* Balloon */
+function createBalloon(){
+    const balloon=document.createElement("div");
+    balloon.className="balloon";
+
+    const xPos=Math.random()*(window.innerWidth-100);
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    const duration=6+Math.random()*8;
+    const surprise=surprises[Math.floor(Math.random()*surprises.length)];
+
+    balloon.style.left=xPos+"px";
+    balloon.style.backgroundColor=color;
+    balloon.style.animation=`floatUp ${duration}s linear forwards`;
+    balloon.innerText=surprise.emoji;
+
+    balloon.onclick=(e)=>{
+        if(!musicStarted){
+            startMusic();
+            musicStarted=true;
+        }
+
+        confetti({
+            particleCount:40,
+            spread:70,
+            origin:{ x:e.clientX/window.innerWidth, y:e.clientY/window.innerHeight },
+            shapes:['heart'],
+            colors:[color,'#ffffff']
+        });
+
+        showModal(surprise.text);
+        balloon.remove();
+    };
+
+    document.body.appendChild(balloon);
+    setTimeout(()=>{balloon.remove();},duration*1000);
+}
+
+function showModal(text){
+    document.getElementById("modal-content").innerHTML=`<h3>Kejutan!</h3><p>${text}</p>`;
+    document.getElementById("modal").style.display="block";
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+setInterval(createBalloon,1200);
+</script>
+
+</body>
+</html>
